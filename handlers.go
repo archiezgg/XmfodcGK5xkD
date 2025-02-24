@@ -23,7 +23,8 @@ func writeMessage(w http.ResponseWriter, msg string) {
 func getBooksHandler(w http.ResponseWriter, r *http.Request) {
 	books, err := getAllBooks()
 	if err != nil {
-		log.Println("can't retrieve Books")
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	for _, v := range books {
