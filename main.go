@@ -13,6 +13,7 @@ func main() {
 	router.HandleFunc("/books", getBooksHandler)
 	router.HandleFunc("/addBook", addBookHandler)
 	router.HandleFunc("/borrowBook", borrowBookHandler)
+	router.HandleFunc("/createBorrower", createBorrowerHandler)
 	log.Println("app is running")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

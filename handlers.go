@@ -70,3 +70,22 @@ func borrowBookHandler(w http.ResponseWriter, r *http.Request) {
 	msg := fmt.Sprintf("book with ID: %v successfully borrowed by user with ID: %v", rb.BookID, rb.BorrowerID)
 	writeMessage(w, msg)
 }
+
+func createBorrowerHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := createBorrower(rb.Username); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	writeMessage(w, "borrower created")
+}
