@@ -2,9 +2,9 @@ package main
 
 import "gorm.io/gorm"
 
-type borrower struct {
+type Borrower struct {
 	gorm.Model
-	bookID    uint
-	firstName string
-	lastName  string
+	BookID    uint
+	FirstName string
+	LastName  string
 }

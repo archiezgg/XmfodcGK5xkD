@@ -39,5 +39,7 @@ func initDB() {
 		}
 	}
 
+	database.AutoMigrate(&Book{})
+	database.AutoMigrate(&Borrower{})
 	log.Println("connected to DB")
 }
