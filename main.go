@@ -12,6 +12,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/books", getBooksHandler)
 	router.HandleFunc("/addBook", addBookHandler)
+	router.HandleFunc("/borrowBook", borrowBookHandler)
 	log.Println("app is running")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

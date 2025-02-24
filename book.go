@@ -21,6 +21,15 @@ func getAllBooks() ([]Book, error) {
 	return books, nil
 }
 
+func getBookByID(bookID uint) (Book, error) {
+	var b Book
+	result := database.First(&b, bookID)
+	if result.Error != nil {
+		return Book{}, result.Error
+	}
+	return b, nil
+}
+
 func addBook(title string) error {
 	book := Book{
 		Title:      title,
@@ -32,5 +41,20 @@ func addBook(title string) error {
 		return result.Error
 	}
 	log.Printf("new book added: title: %v, borrower: -", title)
+	return nil
+}
+
+func borrowBook(bookID uint, borrowerID uint) error {
+	book, err := getBookByID(bookID)
+	if err != nil {
+		return err
+	}
+
+	book.BorrowerID = borrowerID
+
+	result := database.Save(&book)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }

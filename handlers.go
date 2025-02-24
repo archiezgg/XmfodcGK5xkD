@@ -49,3 +49,24 @@ func addBookHandler(w http.ResponseWriter, r *http.Request) {
 
 	writeMessage(w, "book created successfully")
 }
+
+func borrowBookHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		BookID     uint `json:"bookId"`
+		BorrowerID uint `json:"borrowerId"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := borrowBook(rb.BookID, rb.BorrowerID); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	msg := fmt.Sprintf("book with ID: %v successfully borrowed by user with ID: %v", rb.BookID, rb.BorrowerID)
+	writeMessage(w, msg)
+}
