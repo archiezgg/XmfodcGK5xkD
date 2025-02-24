@@ -1,11 +1,14 @@
 package main
 
-import "gorm.io/gorm"
+import (
+	"log"
+
+	"gorm.io/gorm"
+)
 
 type Book struct {
 	gorm.Model
 	BorrowerID uint
-	Author     string
 	Title      string
 }
 
@@ -16,4 +19,18 @@ func getAllBooks() ([]Book, error) {
 		return nil, result.Error
 	}
 	return books, nil
+}
+
+func addBook(title string) error {
+	book := Book{
+		Title:      title,
+		BorrowerID: 0, //as a first implementation, creation happens with borrowerID as 0
+	}
+
+	result := database.Create(&book)
+	if result.Error != nil {
+		return result.Error
+	}
+	log.Printf("new book added: title: %v, borrower: -", title)
+	return nil
 }

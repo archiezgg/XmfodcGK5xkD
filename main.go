@@ -11,6 +11,7 @@ func main() {
 	initDB()
 	router := mux.NewRouter()
 	router.HandleFunc("/books", getBooksHandler)
+	router.HandleFunc("/addBook", addBookHandler)
 	log.Println("app is running")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

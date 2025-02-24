@@ -4,7 +4,6 @@ import "gorm.io/gorm"
 
 type Borrower struct {
 	gorm.Model
-	BookID    uint
-	FirstName string
-	LastName  string
+	BookID   uint
+	LastName string
 }
