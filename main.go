@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	initDB()
 	router := mux.NewRouter()
 	log.Println("app is running")
 	log.Fatal(http.ListenAndServe(":8080", router))
