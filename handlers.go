@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
@@ -53,8 +54,8 @@ func addBookHandler(w http.ResponseWriter, r *http.Request) {
 
 func borrowBookHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
-		BookID     uint `json:"bookId"`
-		BorrowerID uint `json:"borrowerId"`
+		BookID     string `json:"bookId"`
+		BorrowerID string `json:"borrowerId"`
 	}
 
 	var rb requestedBody
@@ -63,7 +64,19 @@ func borrowBookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := borrowBook(rb.BookID, rb.BorrowerID); err != nil {
+	bookId, err := strconv.ParseUint(rb.BookID, 10, 64)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	borrowerId, err := strconv.ParseUint(rb.BorrowerID, 10, 64)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if err := borrowBook(uint(bookId), uint(borrowerId)); err != nil {
 		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
