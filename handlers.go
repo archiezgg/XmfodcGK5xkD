@@ -103,3 +103,57 @@ func createBorrowerHandler(w http.ResponseWriter, r *http.Request) {
 
 	writeMessage(w, "borrower created")
 }
+
+func getBorrowerHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		BorrowerID string `json:"borrowerId"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	borrowerId, err := strconv.ParseUint(rb.BorrowerID, 10, 64)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	borrower, err := getBorrowerByID(uint(borrowerId))
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	msg := fmt.Sprintf("the borrower details: Username: %v, Borrowed Books: %v", borrower.UserName, borrower.Books)
+	writeMessage(w, msg)
+}
+
+func getBorrowedBooksHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		BorrowerID string `json:"borrowerId"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	borrowerId, err := strconv.ParseUint(rb.BorrowerID, 10, 64)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	borrowedBooks, err := getBorrowedBooksByBorrowerID(uint(borrowerId))
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	msg := fmt.Sprintf("the borrowed books by %v are: %v", borrowerId, borrowedBooks)
+	writeMessage(w, msg)
+}

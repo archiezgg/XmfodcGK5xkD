@@ -25,3 +25,29 @@ func createBorrower(userName string) error {
 	log.Printf("new borrower added: username: %v", userName)
 	return nil
 }
+
+func getBorrowerByID(borrowerID uint) (Borrower, error) {
+	var b Borrower
+	result := database.First(&b, borrowerID)
+
+	if result.Error != nil {
+		return Borrower{}, result.Error
+	}
+
+	borrowedBooks, err := getBorrowedBooksByBorrowerID(borrowerID)
+	if err != nil {
+		return Borrower{}, err
+	}
+
+	b.Books = borrowedBooks
+	return b, nil
+}
+
+func getBorrowedBooksByBorrowerID(borrowerID uint) ([]Book, error) {
+	var books []Book
+	result := database.Where("borrower_id = ?", borrowerID).Find(&books)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return books, nil
+}
